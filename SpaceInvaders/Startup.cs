@@ -51,7 +51,7 @@ namespace SpaceInvaders
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chatHub");
