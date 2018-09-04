@@ -5,6 +5,8 @@ var playerOne;
 var playerTwo;
 var enemyMiniboss;
 
+
+
 function InitGame() {
 
     //Skapa canvas och context
@@ -15,11 +17,19 @@ function InitGame() {
     imgPlayer1.src = 'images/Sprites/Player.png';
 
     //skapa player1
-    playerOne = new airplane(30, 30, imgPlayer1, 10, 120);
+    playerOne = new airplane(40, 40, imgPlayer1, 10, 120);
 
+   //nme
+    var imgEnemy = new Image();
+    imgEnemy.src = 'images/Sprites/Enemy.png';
+    enemyMiniboss = new airplane(30, 30, imgEnemy, 800, 320);
+    enemyMiniboss.speedX = -3;
+    enemyMiniboss.speedY = 1;
 
 
 };
+
+
 
 var myGameSky = {
     canvas: document.createElement("canvas"),
@@ -29,28 +39,32 @@ var myGameSky = {
         this.canvas.style.border = "thick solid black";
         this.canvas.style.margin = "auto";
         this.canvas.tabIndex = "1";
-        document.getElementById("gameSpace").appendChild(this.canvas);
+        document.getElementById("gameSpace").appendChild(this.canvas).focus();
         this.context = this.canvas.getContext('2d');
 
         this.context.fillStyle = "lightblue";
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.interval = setInterval(updateGameArea, 20);
+        this.interval = setInterval(updateGameArea, 50);
 
 
         window.addEventListener('keydown', function (e) {
             myGameSky.keys = (myGameSky.keys || []);
             myGameSky.keys[e.keyCode] = true;
-            console.log(myGameSky.keys);
+
+           
+            console.log(myGameSky.keys[39])
+    
+
         });
 
         window.addEventListener('keyup', function (e) {
             myGameSky.keys[e.keyCode] = false;
         });
-
-    },
-    update: function () {
         this.context = this.canvas.getContext('2d');
+    },
+    updateSky: function () {
+        
 
         this.context.fillStyle = "lightblue";
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -62,17 +76,15 @@ var myGameSky = {
 }
 
 function updateGameArea() {
-
+    
     myGameSky.clear();
-    myGameSky.update();
-    playerOne.speedX = 0;
-    playerOne.speedY = 0;
-    if (myGameSky.keys && myGameSky.keys[37]) { playerOne.speedX = -1; }
-    if (myGameSky.keys && myGameSky.keys[39]) { playerOne.speedX = 1; }
-    if (myGameSky.keys && myGameSky.keys[38]) { playerOne.speedY = -1; }
-    if (myGameSky.keys && myGameSky.keys[40]) { playerOne.speedY = 1; }
+    myGameSky.updateSky();
+    
     playerOne.newPos();
     playerOne.update();
+
+    enemyMiniboss.newPos();
+    enemyMiniboss.update();
 }
 
 function airplane(width, height, image, x, y) {
@@ -82,15 +94,20 @@ function airplane(width, height, image, x, y) {
     this.y = y;
     this.speedX = 0;
     this.speedY = 0;
-    ctx = myGameSky.context;
+    
+
+    var ctx = myGameSky.context;
 
     image.onload = function () {
-        ctx.drawImage(image, x, y);
+        ctx.drawImage(image, this.x, this.y);
     };
     this.update = function () {
-        image.onload = function () {
-            ctx.drawImage(image, x, y);
-        };
+        if (myGameSky.keys && myGameSky.keys[37]) { playerOne.speedX = -1; }
+        if (myGameSky.keys && myGameSky.keys[39]) { playerOne.speedX = 1; }
+        if (myGameSky.keys && myGameSky.keys[38]) { playerOne.speedY = -1; }
+        if (myGameSky.keys && myGameSky.keys[40]) { playerOne.speedY = 1; }
+        ctx.drawImage(image, this.x, this.y);
+        
     }
     this.newPos = function () {
         this.x += this.speedX;

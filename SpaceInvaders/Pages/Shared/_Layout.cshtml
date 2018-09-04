@@ -42,10 +42,7 @@
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - SpaceInvaders</p>
-        </footer>
+        
     </div>
 
     <environment include="Development">
@@ -68,7 +65,7 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
-
+    <script src="~/js/Game.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
