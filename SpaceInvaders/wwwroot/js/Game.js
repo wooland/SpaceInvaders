@@ -5,7 +5,12 @@ var playerOne;
 var playerTwo;
 var enemyMiniboss;
 var enemyPlanes = [];
+var bullets = [];
 
+var p1Score;
+
+var imgEnemy = new Image();
+imgEnemy.src = 'images/Sprites/Enemy.png';
 
 
 function InitGame() {
@@ -21,13 +26,7 @@ function InitGame() {
     playerOne = new airplane(30, 30, imgPlayer1, 10, 120);
 
    //nme
-    var imgEnemy = new Image();
-    imgEnemy.src = 'images/Sprites/Enemy.png';
-    enemyMiniboss = new airplane(30, 30, imgEnemy, 800, 320);
-    enemyMiniboss.speedX = -1;
-    enemyMiniboss.speedY = 0;
-
-
+ 
 };
 
 
@@ -42,13 +41,13 @@ var myGameSky = {
         this.canvas.tabIndex = "1";
         document.getElementById("gameSpace").appendChild(this.canvas).focus();
         this.context = this.canvas.getContext('2d');
-
+       
         this.context.fillStyle = "lightblue";
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.interval = setInterval(updateGameArea, 10);
-
-
+        this.frameNo = 0;   
+        p1Score = new textComponent("30px", "Consolas", "black", 280, 40, "text");
         window.addEventListener('keydown', function (e) {
             myGameSky.keys = (myGameSky.keys || []);
             myGameSky.keys[e.keyCode] = true;
@@ -68,30 +67,58 @@ var myGameSky = {
 
         this.context.fillStyle = "lightblue";
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fillText("Hello World", 10, 50);
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
     stop: function () {
         clearInterval(this.interval);
+        alert("Game Over Dude");
     }
 
 }
 
 function updateGameArea() {
-    if (playerOne.crashWith(enemyMiniboss)) {
-        myGameSky.stop();
-    } else {
-        myGameSky.clear();
-        myGameSky.updateSky();
 
-        playerOne.newPos();
-        playerOne.update();
-
-        enemyMiniboss.newPos();
-        enemyMiniboss.update();
+    //Kolla kollision med enemy array
+    for (i = 0; i < enemyPlanes.length; i += 1) {
+        if (playerOne.crashWith(enemyPlanes[i])) {
+            myGameSky.stop();
+            return;
+        }
     }
+
+    
+    myGameSky.clear();
+
+    myGameSky.frameNo += 1;
+ 
+    
+
+    if (myGameSky.frameNo == 1 || everyinterval(250)) {
+        enemy1();
+    }
+    myGameSky.updateSky();
+
+    playerOne.newPos();
+    playerOne.update();
+    p1Score.text = "SCORE: " + myGameSky.frameNo;
+    p1Score.update();
+    //Uppdatera enemy array
+    for (i = 0; i < enemyPlanes.length; i += 1) {
+        enemyPlanes[i].newPos();
+        enemyPlanes[i].update();
+        }
+    
 }
+
+function enemy1() {
+    var randomH = Math.floor(Math.random() * 600) + 1;  
+    var e = new airplane(30, 30, imgEnemy, 800, randomH);
+    e.speedX = -1;
+    enemyPlanes.push(e);
+} 
 
 function airplane(width, height, image, x, y) {
     this.width = width;
@@ -147,4 +174,30 @@ function airplane(width, height, image, x, y) {
         return crash;
     }
 
+}
+
+function everyinterval(n) {
+    if ((myGameSky.frameNo / n) % 1 == 0) { return true; }
+    return false;
+}
+
+function textComponent(width, height, color, x, y, type) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.speedX = 0;
+    this.speedY = 0;
+    var ctx = myGameSky.context;
+
+    this.update = function () {
+        ctx.font = this.width + " " + this.height;
+        ctx.fillStyle = color;
+        ctx.fillText(this.text, this.x, this.y);
+        
+
+    }
+    
+  
+    
 }
