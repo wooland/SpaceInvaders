@@ -16,10 +16,7 @@ function InitGame() {
 
     //skapa player1
     playerOne = new airplane(30, 30, imgPlayer1, 10, 120);
-
-
-
-};
+}
 
 var myGameSky = {
     canvas: document.createElement("canvas"),
@@ -59,7 +56,7 @@ var myGameSky = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-}
+};
 
 function updateGameArea() {
 
@@ -91,10 +88,32 @@ function airplane(width, height, image, x, y) {
         image.onload = function () {
             ctx.drawImage(image, x, y);
         };
-    }
+    };
     this.newPos = function () {
         this.x += this.speedX;
         this.y += this.speedY;
-    }
+    };
+}
 
+function bullet(width, height, image, x, y) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.speedX = 0;
+    this.speedY = 0;
+    ctx = myGameSky.context;
+
+    image.onload = function () {
+        ctx.drawImage(image, x, y);
+    };
+    this.update = function () {
+        image.onload = function () {
+            ctx.drawImage(image, x, y);
+        };
+    };
+    this.newPos = function () {
+        this.x += this.speedX;
+        this.y += this.speedY;
+    };
 }

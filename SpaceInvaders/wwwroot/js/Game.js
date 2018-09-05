@@ -6,14 +6,20 @@ var playerTwo;
 var enemyMiniboss;
 var enemyPlanes = [];
 var bullets = [];
+var bulletFired = false;
 
-var p1Score;    
+var p1Score;
+var bonus = 0;
 
 var imgEnemy = new Image();
 imgEnemy.src = 'images/Sprites/Enemy.png';
 
 var imgBullet = new Image();
 imgBullet.src = 'images/Sprites/Bullet.png';
+
+var imgExplosion = new Image();
+imgExplosion.src = 'images/Sprites/Explosion.png';
+
 
 
 function InitGame() {
@@ -95,11 +101,12 @@ function updateGameArea() {
     for (i = 0; i < enemyPlanes.length; i += 1) {
         for (var j = 0; j < bullets.length; j++) {
             if (enemyPlanes[i].crashWith(bullets[j])) {
-                enemyPlanes.splice(i, 1)
-                
+                explosion(enemyPlanes[i].x, enemyPlanes[i].y);
+                enemyPlanes.splice(i, 1);
+                bullets.splice(j, 1);
+                bonus += 100;
             }
         }
-
     }
 
 
@@ -109,13 +116,17 @@ function updateGameArea() {
 
     if (myGameSky.frameNo == 1 || everyinterval(250)) {
         enemy1();
-        fire();
+    }
+    if (everyinterval(25)) {
+        if (bulletFired) {
+            fire();
+        }
     }
     myGameSky.updateSky();
 
     playerOne.newPos();
     playerOne.update();
-    p1Score.text = "SCORE: " + myGameSky.frameNo;
+    p1Score.text = "SCORE: " + (myGameSky.frameNo + bonus);
     p1Score.update();
     //Uppdatera enemy array
     for (i = 0; i < enemyPlanes.length; i += 1) {
@@ -125,9 +136,7 @@ function updateGameArea() {
     for (i = 0; i < bullets.length; i += 1) {
         bullets[i].newPos();
         bullets[i].update();
-    }
-
-    
+    }   
 }
 
 function enemy1() {
@@ -141,6 +150,7 @@ function fire() {
     var shot = new airplane(5, 5, imgBullet, playerOne.x + 25, playerOne.y);
     shot.speedX = 4;
     bullets.push(shot);
+    bulletFired = false;
 }
 
 function airplane(width, height, image, x, y) {
@@ -149,8 +159,7 @@ function airplane(width, height, image, x, y) {
     this.x = x;
     this.y = y;
     this.speedX = 0;
-    this.speedY = 0;
-    
+    this.speedY = 0;  
 
     var ctx = myGameSky.context;
 
@@ -170,6 +179,8 @@ function airplane(width, height, image, x, y) {
         if (myGameSky.keys && !myGameSky.keys[38] && !myGameSky.keys[40]) {
             playerOne.speedY = 0;
         }
+        if (myGameSky.keys && myGameSky.keys[32]) { bulletFired = true; }
+
         
         ctx.drawImage(image, this.x, this.y);
         
@@ -196,7 +207,6 @@ function airplane(width, height, image, x, y) {
         }
         return crash;
     }
-
 }
 
 function everyinterval(n) {
@@ -217,10 +227,9 @@ function textComponent(width, height, color, x, y, type) {
         ctx.font = this.width + " " + this.height;
         ctx.fillStyle = color;
         ctx.fillText(this.text, this.x, this.y);
-        
+    }   
+}
 
-    }
-    
-  
-    
+function explosion(x, y) {
+    new airplane(30, 30, imgExplosion, x, y);
 }
