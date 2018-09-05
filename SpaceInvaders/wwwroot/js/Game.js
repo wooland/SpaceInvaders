@@ -12,6 +12,9 @@ var p1Score;
 var imgEnemy = new Image();
 imgEnemy.src = 'images/Sprites/Enemy.png';
 
+var imgBullet = new Image();
+imgBullet.src = 'images/Sprites/Bullet.png';
+
 
 function InitGame() {
 
@@ -88,16 +91,25 @@ function updateGameArea() {
             return;
         }
     }
+    //Kolla kollision med skott / enemies
+    for (i = 0; i < enemyPlanes.length; i += 1) {
+        for (var j = 0; j < bullets.length; j++) {
+            if (enemyPlanes[i].crashWith(bullets[j])) {
+                enemyPlanes.splice(i, 1)
+                
+            }
+        }
 
-    
+    }
+
+
     myGameSky.clear();
 
     myGameSky.frameNo += 1;
- 
-    
 
     if (myGameSky.frameNo == 1 || everyinterval(250)) {
         enemy1();
+        fire();
     }
     myGameSky.updateSky();
 
@@ -109,7 +121,12 @@ function updateGameArea() {
     for (i = 0; i < enemyPlanes.length; i += 1) {
         enemyPlanes[i].newPos();
         enemyPlanes[i].update();
-        }
+    }
+    for (i = 0; i < bullets.length; i += 1) {
+        bullets[i].newPos();
+        bullets[i].update();
+    }
+
     
 }
 
@@ -119,6 +136,12 @@ function enemy1() {
     e.speedX = -1;
     enemyPlanes.push(e);
 } 
+function fire() {
+    
+    var shot = new airplane(5, 5, imgBullet, playerOne.x + 25, playerOne.y);
+    shot.speedX = 4;
+    bullets.push(shot);
+}
 
 function airplane(width, height, image, x, y) {
     this.width = width;
@@ -140,7 +163,7 @@ function airplane(width, height, image, x, y) {
         if (myGameSky.keys && myGameSky.keys[39]) { playerOne.speedX = 1; }
         if (myGameSky.keys && myGameSky.keys[38]) { playerOne.speedY = -1; }
         if (myGameSky.keys && myGameSky.keys[40]) { playerOne.speedY = 1; }
-
+  
         if (myGameSky.keys && !myGameSky.keys[37] && !myGameSky.keys[39]) {
             playerOne.speedX = 0;
         }
