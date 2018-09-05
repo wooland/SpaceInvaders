@@ -7,7 +7,7 @@ var enemyMiniboss;
 var enemyPlanes = [];
 var bullets = [];
 
-var p1Score;
+var p1Score;    
 
 var imgEnemy = new Image();
 imgEnemy.src = 'images/Sprites/Enemy.png';
