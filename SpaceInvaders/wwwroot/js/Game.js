@@ -118,7 +118,7 @@ function updateGameArea() {
     if (everyinterval(100)) {
         explosions.length = 0;
     }
-    if (everyinterval(350)) {
+    if (everyinterval(200)) {
         cloud();
     }
     if (myGameSky.frameNo === 1 || everyinterval(250)) {
@@ -140,7 +140,6 @@ function updateGameArea() {
         if (enemyPlanes[i].x < -64) {
             enemyPlanes[i].x = 800;
         }
-        //enemyPlanes[i].y = enemyPlanes[i].y + (Math.random() * (2 - -1)) + -1;
         enemyPlanes[i].newPos();
         enemyPlanes[i].update();
     }
@@ -255,6 +254,7 @@ function everyinterval(n) {
     return false;
 }
 explosions.length = 0;
+
 function textComponent(width, height, color, x, y, type) {
     this.width = width;
     this.height = height;
