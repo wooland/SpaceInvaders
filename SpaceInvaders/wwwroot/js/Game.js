@@ -42,7 +42,7 @@ function InitGame() {
 }
 
 
-
+//Canvas med tillhörande funktioner
 var myGameSky = {
     canvas: document.createElement("canvas"),
     start: function () {
@@ -114,6 +114,7 @@ function updateGameArea() {
 
     myGameSky.clear();
 
+    //Intervall för de olika elementen som skapas/uppdateras
     myGameSky.frameNo += 1;
     if (everyinterval(100)) {
         explosions.length = 0;
@@ -135,7 +136,7 @@ function updateGameArea() {
     playerOne.update();
     p1Score.text = "SCORE: " + (myGameSky.frameNo + bonus);
     p1Score.update();
-    //Uppdatera enemy array
+    //Uppdatera motståndararray
     for (i = 0; i < enemyPlanes.length; i += 1) {
         if (enemyPlanes[i].x < -64) {
             enemyPlanes[i].x = 800;
@@ -143,21 +144,24 @@ function updateGameArea() {
         enemyPlanes[i].newPos();
         enemyPlanes[i].update();
     }
+    //Uppdatera skottarray
     for (i = 0; i < bullets.length; i += 1) {
         bullets[i].newPos();
         bullets[i].update();
     }
+    //Uppdatera array för explosioner
     for (i = 0; i < explosions.length; i += 1) {
         explosions[i].newPos();
         explosions[i].update();
     }
+    //Uppdatera molnarray
     for (i = 0; i < clouds.length; i += 1) {
         clouds[i].newPos();
         clouds[i].update();
     }
     playerOne.checkPlayerBounds();
 }
-
+//Funktioner för att skapa de olika elementen
 function enemy1() {
     var randomH = Math.floor(Math.random() * (569 - 32)) + 32;
     var e = new airplane(30, 30, imgEnemy, 800, randomH);
@@ -177,7 +181,6 @@ function fire() {
     bullets.push(shot);
     bulletFired = false;
 }
-
 function airplane(width, height, image, x, y) {
     this.width = width;
     this.height = height;
@@ -191,6 +194,7 @@ function airplane(width, height, image, x, y) {
     image.onload = function () {
         ctx.drawImage(image, this.x, this.y);
     };
+    //Uppdatera spelarposition med hjälp av knapptryck
     this.update = function () {
 
         if (myGameSky.keys && myGameSky.keys[37]) { playerOne.speedX = -1; }
@@ -214,6 +218,7 @@ function airplane(width, height, image, x, y) {
         this.x += this.speedX;
         this.y += this.speedY;
     };
+    //Funktion för att upptäcka kollisioner
     this.crashWith = function (otherobj) {
         var myleft = this.x;
         var myright = this.x + (this.width);
@@ -232,6 +237,7 @@ function airplane(width, height, image, x, y) {
         }
         return crash;
     };
+    //Funktion för att hålla spelaren innanför canvasen
     this.checkPlayerBounds = function () {
         if (playerOne.x < 0) {
             playerOne.x = 0;
